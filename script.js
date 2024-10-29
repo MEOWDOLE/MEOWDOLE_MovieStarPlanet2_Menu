@@ -196,6 +196,7 @@
             const data = JSON.parse(event.data.substring(2));
             if (data[0] === "message" && data[1].messageType === "2001") {
                 const message = data[1].messageContent.message;
+                const profileID = data[1].messageContent.profileId;
                 console.log('%c Ontvangen bericht: ' + message, 'color: green; font-weight: bold; font-size: 14px;');
                 
                 if (imitateMessages) {
@@ -209,7 +210,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            content: message
+                            content: `${profileID}: ${message}`
                         }),
                     }).then(response => {
                         if (!response.ok) {
