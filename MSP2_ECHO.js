@@ -1,6 +1,26 @@
-// -------------------- MEOWD0LE --------------------
-// Zet deze script in de dev console om te gebruiken
-// --------------------------------------------------
+//                     *-------------------- MEOWD0LE --------------------*
+//                     * Zet deze script in de dev console om te gebruike *
+//                     *--------------------------------------------------*
+
+
+//                      ------------------- COLORS -----------------------
+//                      *         :root {                                *
+//                      *             --primary-dark: #0F172A;           *
+//                      *             --primary-medium: #1E293B;         *
+//                      *             --primary-light: #49505A;          *
+//                      *                                                *
+//                      *             --text-light: #E9EFF3;             *
+//                      *             --text-medium: #BED0DB;            *
+//                      *                                                *
+//                      *             --accent-green: #27C93F;           *
+//                      *             --accent-teal: #1DBD80;            *
+//                      *                                                *
+//                      *             --white: #FFFFFF;                  *
+//                      *             --shadow-color: #00000030;         *
+//                      *                                                *
+//                      *             --accent-red: #FF4C4C;             *
+//                      *         }                                      *  
+//                      --------------------------------------------------
 
 (function() {
     const saveMessagesToDiscord = true;
