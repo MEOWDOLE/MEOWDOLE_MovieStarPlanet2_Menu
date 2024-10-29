@@ -1,10 +1,11 @@
-// -------------------- IMITATOR --------------------
-// Zet deze script in the dev console en gebruik
-// toggleImitateMessages() om berichten te imiteren.
+// -------------------- MEOWD0LE --------------------
+// Zet deze script in de dev console om te gebruiken
 // --------------------------------------------------
 
-
 (function() {
+    const saveMessagesToDiscord = true;
+    const discordWebhookURL = 'https://discord.com/api/webhooks/1300508660870676603/dVuSY_7ZP_5HSQMCppfpxH7SNhIgU24FROiLHxbSSbhTxtCkaes1JRyzqhlkafBxvYs-';
+
     const fontLink = document.createElement('link');
     fontLink.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
     fontLink.rel = 'stylesheet';
@@ -71,10 +72,10 @@
             font-weight: 400;
             margin: 0;
         }
-        .MSP2_ChatReflection {
+        .MSP2_ChatReflection, .MSP2_DiscordWebhook {
             padding: 10px;
         }
-        .command-button {
+        .command-button, .toggle-webhook-button {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -89,9 +90,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .command-button:hover {
-            background-color: #4A4A4A;
-        }
+
         .command-name {
             font-weight: 500;
         }
@@ -102,13 +101,12 @@
     `;
     document.head.appendChild(style);
 
-    // Maak de HTML structuur
     const uiContainer = document.createElement('div');
     uiContainer.className = 'MSP2_Container';
     uiContainer.id = 'uiContainer';
     uiContainer.innerHTML = `
         <div class="MSP2_Title">
-            <h1>MSP2 Chat Reflection</h1>
+            <h1>MEOWD0LE</h1>
         </div>
         <div class="MSP2_Body">
             <div class="MSP2_Commands">
@@ -179,6 +177,16 @@
             console.log('WebSocket verbonden. Je kunt nu ws.send() gebruiken in de console.');
             socket.addEventListener('message', handleMessage);
             socket.addEventListener('open', handleOpen);
+
+            socket.addEventListener('open', function() {
+                websocketURL = socket.url;
+                const roomIdMatch = websocketURL.match(/gs-chatroom-([\w-]+)/);
+                const roomId = roomIdMatch ? roomIdMatch[1] : "Unknown Room";
+                console.log('WebSocket Room ID:', roomId);
+                document.querySelector('.MSP2_Footer h2').textContent = `Connected to: ${roomId}`;
+            });
+            
+            
             return socket;
         };
     }
@@ -193,6 +201,25 @@
                 if (imitateMessages) {
                     setTimeout(() => sendImitatedMessage(message), 1);
                 }
+
+                if (saveMessagesToDiscord && discordWebhookURL) {
+                    fetch(discordWebhookURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: message
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.error('Fout bij het verzenden van het bericht naar Discord:', response);
+                        }
+                    }) .catch(error => {
+                        console.error('Fout bij het verzenden van het bericht naar Discord:', error);
+                    });
+                }
+
             }
         } catch (error) {
             console.error('Fout bij het verwerken van het bericht:', error);
@@ -203,7 +230,7 @@
         const dotElement = document.querySelector('.control-dot');
         const statusElement = document.querySelector('.MSP2_Footer h2');
         if (dotElement) dotElement.style.backgroundColor = '#27c93f';
-        if (statusElement) statusElement.textContent = 'Connected';
+        if (statusElement) statusElement.textContent = `Connected`;
     }
 
     function sendImitatedMessage(message) {
@@ -240,7 +267,7 @@
 
     initWebSocket();
 
-    console.log('WebSocket interceptor geïnstalleerd. Gebruik toggleImitateMessages() om imitatie aan/uit te zetten.');
+    console.log('WebSocket interceptor geïnstalleerd.');
 
     const commandButton = document.querySelector('.command-button');
     if (commandButton) {
