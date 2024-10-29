@@ -1,3 +1,7 @@
+// -------------------- MEOWD0LE --------------------
+// Zet deze script in de dev console om te gebruiken
+// --------------------------------------------------
+
 (function() {
     const fontLink = document.createElement("link");
     fontLink.href =
