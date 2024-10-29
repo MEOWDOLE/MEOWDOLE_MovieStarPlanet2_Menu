@@ -177,6 +177,7 @@
             console.log('WebSocket verbonden. Je kunt nu ws.send() gebruiken in de console.');
             socket.addEventListener('message', handleMessage);
             socket.addEventListener('open', handleOpen);
+            socket.addEventListener('open', keepAlive);
 
             socket.addEventListener('open', function() {
                 websocketURL = socket.url;
@@ -239,6 +240,17 @@
         console.log(`Imitatiebericht verzenden: ${bericht}`);
         if (window.ws) {
             ws.send(bericht);
+        } else {
+            console.log('Let op: ws is niet gedefinieerd. Het bericht is niet daadwerkelijk verzonden.');
+        }
+    }
+
+    function keepAlive () {
+        const timeout = 6 * 1000;
+
+        if (window.ws) {
+            ws.send('2');
+            setTimeout(keepAlive, timeout);
         } else {
             console.log('Let op: ws is niet gedefinieerd. Het bericht is niet daadwerkelijk verzonden.');
         }
