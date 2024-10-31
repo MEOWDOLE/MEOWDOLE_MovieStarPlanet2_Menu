@@ -214,6 +214,7 @@
                     <button class="emote_BasicGift">Basic Gift</button>
                     <button class="emote_Heart">Halloween Heart</button>
                     <button class="emote_VIPGift">VIP Gift</button>
+                    <button class="emote_Skull">Event Skull</button>
                 </div>
             </div>
             <div class="MSP2_Moods">
@@ -222,18 +223,21 @@
                 </div>
                 <div class="mood_Buttons">
                     <button class="mood_Bended">2023_bended_lz</button>
-                    <button class="mood_Bended">2023_spidercrawl_lsz</button>
-                    <button class="mood_Bended">xmas_2022_frosty_dg</button>
-                    <button class="mood_Bended">xmas_2022_freezing_lsz</button>
-                    <button class="mood_Bended">2022_turkeywalk_lsz</button>
-                    <button class="mood_Bended">bad_2022_teenwalk_dg</button>
-                    <button class="mood_Bended">swim_new</button>
-                    <button class="mood_Bended">noshoes_skating</button>
-                    <button class="mood_Bended">no walking</button>
+                    <button class="mood_Spider">2023_spidercrawl_lsz</button>
+                    <button class="mood_Frosty">xmas_2022_frosty_dg</button>
+                    <button class="mood_Freezing">xmas_2022_freezing_lsz</button>
+                    <button class="mood_Turky">2022_turkeywalk_lsz</button>
+                    <button class="mood_Teenwalk">bad_2022_teenwalk_dg</button>
+                    <button class="mood_Swim">swim_new</button>
+                    <button class="mood_Skating">noshoes_skating</button>
                 </div>
             </div>
         </div>
-    `;
+        
+        `;
+
+
+    // <button class="mood_Bended">no walking</button>
     document.body.appendChild(container);
 
     const uiContainer = document.getElementById('animation_Container');
@@ -333,35 +337,39 @@
 
             socket.addEventListener('error', function() {
                 console.error('WebSocket error');
+                uiContainer.querySelector('.animation_Title').classList.remove('connected');
+                console.log(`
+                ******************************************
+                            WEBSOCKET ERROR
+                ******************************************
+                `);
             });
 
-            // function sendImitatedMessage(message) {
-            //     const bericht = `42["chatv2:send",{"message":"${message}"}]`;
+            function sendSocketMessage(message) {
+                const bericht = `${message}`;
+                console.log(`Custom message to Socket: ${bericht}`);
+                if (window.ws) {
+                    ws.send(bericht);
+                } else {
+                    console.log(`You're cooked`);
+                    
+                }
+            };
 
-            //     if (window.ws) {
-            //         ws.send(bericht);
-            //     } else {
-            //         console.log(`GG It's over.`);
-            //     }
-            // }
-
-            // // check what button is clicked
-            // uiContainer.querySelector('.emote_LvlUp').addEventListener('click', () => {
-            //     sendImitatedMessage(`42["avt:lvlup",{"newLevel":3}]`);
-            // });
-
-            // uiContainer.querySelector('.emote_BasicGift').addEventListener('click', () => {
-            //     sendImitatedMessage(`42["chatv2:send",{"message":"coming later 1"}]`);
-            // });
-
-            // uiContainer.querySelector('.emote_Heart').addEventListener('click', () => {
-            //     sendImitatedMessage(`42["chatv2:send",{"message":"coming later 2"}]`);
-            // });
-
-            // uiContainer.querySelector('.emote_VIPGift').addEventListener('click', () => {
-            //     sendImitatedMessage(`42["chatv2:send",{"message":"coming later 3"}]`);
-            // });
-
+            document.querySelector('.emote_LvlUp').addEventListener('click', () => sendSocketMessage('42["avt:lvlup",{"newLevel":3}]'));
+            document.querySelector('.emote_BasicGift').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_regular_withcoins","looping":false}]'));
+            document.querySelector('.emote_Heart').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_heart","looping":false}]'));
+            document.querySelector('.emote_VIPGift').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_vip_withmanycoins","looping":false}]'));
+            document.querySelector('.emote_Skull').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_halloween_skull","looping":false}]'));
+            
+            document.querySelector('.mood_Bended').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"2023_bended_lz"}]'));
+            document.querySelector('.mood_Spider').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"2023_spidercrawl_lsz"}]'));
+            document.querySelector('.mood_Frosty').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"xmas_2022_frosty_dg"}]'));
+            document.querySelector('.mood_Freezing').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"xmas_2022_freezing_lsz"}]'));
+            document.querySelector('.mood_Turky').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"2022_turkeywalk_lsz"}]'));
+            document.querySelector('.mood_Teenwalk').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"bad_2022_teenwalk_dg"}]'));
+            document.querySelector('.mood_Swim').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"swim_new"}]'));
+            document.querySelector('.mood_Skating').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"noshoes_skating"}]'));
 
             return socket;
         };
