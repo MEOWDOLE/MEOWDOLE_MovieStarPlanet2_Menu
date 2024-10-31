@@ -1,166 +1,421 @@
-//                     *-------------------- MEOWD0LE --------------------*
-//                     * Zet deze script in de dev console om te gebruike *
-//                     *--------------------------------------------------*
-
-
-//                      ------------------- COLORS -----------------------
-//                      *         :root {                                *
-//                      *             --primary-dark: #0F172A;           *
-//                      *             --primary-medium: #1E293B;         *
-//                      *             --primary-light: #49505A;          *
-//                      *                                                *
-//                      *             --text-light: #E9EFF3;             *
-//                      *             --text-medium: #BED0DB;            *
-//                      *                                                *
-//                      *             --accent-green: #27C93F;           *
-//                      *             --accent-teal: #1DBD80;            *
-//                      *                                                *
-//                      *             --white: #FFFFFF;                  *
-//                      *             --shadow-color: #00000030;         *
-//                      *                                                *
-//                      *             --accent-red: #FF4C4C;             *
-//                      *         }                                      *  
-//                      --------------------------------------------------
-
 (function() {
-    const saveMessagesToDiscord = true;
-    const discordWebhookURL = 'https://discord.com/api/webhooks/1300508660870676603/dVuSY_7ZP_5HSQMCppfpxH7SNhIgU24FROiLHxbSSbhTxtCkaes1JRyzqhlkafBxvYs-';
-
-    const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
+    const discord_webhook = "https://discord.com/api/webhooks/1300508660870676603/dVuSY_7ZP_5HSQMCppfpxH7SNhIgU24FROiLHxbSSbhTxtCkaes1JRyzqhlkafBxvYs-";
 
     const style = document.createElement('style');
-    style.textContent = `
-        .MSP2_Container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 500px;
-            background-color: #2c2c2c;
-            font-family: 'Roboto', sans-serif;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+    style.innerHTML = `
+        :root {
+
+            --primary-bg: #0f172afa;
+            --secondary-bg: #1e293b;
+        
+            --border-color: #6366f126;
+            --basic-radius: 8px;
+        
+            --dissconnected: #FF5C5C;
+            --connected: #98FF98;
+            --color-loading: #FFD700;
+        
+            --slider-green: #50C878;
+        
+            --text-color: #f8fafc;
+        
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             user-select: none;
+
+            transition: all 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1;}
+            to { opacity: 0;}
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+
+        .repeater_Container {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            position: fixed; /* Veranderd van 'absolute' naar 'fixed' */
+            top: 50%; /* Maakt het verticaal gecentreerd */
+            left: 50%; /* Maakt het horizontaal gecentreerd */
+            width: 500px;
+            max-width: 400px;
+            background: #0f172afa;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px #0000004d, 0 0 0 1px var(--border-color);
+            opacity: 0;
             z-index: 9999;
+            backdrop-filter: blur(12px);
+            animation: slideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transition: transform 0.5s ease, opacity 0.5s ease; /* Voeg transities toe */
+
+            height: auto;
+            padding-bottom: 15px;
         }
-        .MSP2_Title {
-            width: 100%;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #1e1e1e;
-            border-bottom: 1px solid #3a3a3a;
-            cursor: move;
+
+        .repeater_Container.close {
+            transform: translateY(-100%); /* Beweeg naar boven */
+            opacity: 0; /* Vervaag naar transparant */
         }
-        .MSP2_Title h1 {
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 400;
-            margin: 0;
+
+        @media (max-width: 480px) {
+            .quiz-container {
+                width: 90%;
+            }
         }
-        .MSP2_Body {
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        .MSP2_Footer {
-            width: 100%;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            background-color: #1e1e1e;
-            border-top: 1px solid #3a3a3a;
-        }
-        .control-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .red { background-color: #ff5f56; }
-        .MSP2_Footer h2 {
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 400;
-            margin: 0;
-        }
-        .MSP2_ChatReflection, .MSP2_DiscordWebhook {
-            padding: 10px;
-        }
-        .command-button, .toggle-webhook-button {
+
+        .repeater_Header {
+            background: #1e293b;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            background-color: #3A3A3A;
-            border: none;
-            border-left: 4px solid #ff5f56;
-            color: white;
-            padding: 10px 15px;
-            text-align: left;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            border-radius: 16px 16px 0 0;
+            cursor: move;
         }
 
-        .command-name {
-            font-weight: 500;
+        .repeater_Title {
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-        .command-shortcut {
+
+        .repeater_Title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--dissconnected);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--dissconnected);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .repeat_Close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 18px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .repeat_Content {
+            font-family: var(--font-family);
+            width: 100%;
+            height: calc(100% - 48px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            align-content: center;
+            gap: 8px;
+        }
+
+        .repeat_Close:hover {
+            background: #334155;
+            color: var(--text-color);
+        }
+
+        .MSP2_Repeates {
+            background-color: var(--secondary-bg);
+            width: 375px;
+            height: auto;
+            margin-top: 8px;
+            border-radius: var(--basic-radius);
+        }
+
+        .repeater_Title.connected::before {
+            content: '';
+            display: block;
+            background-color: green;
+            box-shadow: 0 0 8px var(--connected);
+        }
+        
+
+        .MSP2_Moods {
+            background-color: var(--secondary-bg);
+            width: 375px;
+            height: auto;
+            border-radius: var(--basic-radius);
+        }
+
+        .repeat_Header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            padding: 8px 16px;
+            flex-direction: column;
+        }
+
+        .repeat_Header h3 {
+            color: var(--text-color);
             font-size: 12px;
-            color: #BBBBBB;
+            font-weight: 600;
         }
+
+
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: #c968805d;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .repeater_x {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Positions switch to the right */
+            gap: 8px;
+            padding: 16px 0;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            font-size: 16px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px; /* Reduced width */
+            height: 24px; /* Reduced height */
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--dissconnected);
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; /* Reduced size */
+            width: 18px; /* Reduced size */
+            left: 3px;
+            top: 1.5px;
+            bottom: 3px;
+            background-color: var(--text-color);
+            transition: 0.4s;
+            border-radius: 50%;
+            border: 1px solid var(--secondary-bg);
+        }
+
+        input:checked + .slider {
+            background-color: var(--slider-green); /* Uses the green color defined */
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--slider-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px); /* Adjusted for smaller size */
+        }
+
+        .discord_Content {
+            font-family: var(--font-family);
+            width: 100%;
+            height: calc(100% - 48px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            align-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .MSP2_Discord {
+            background-color: var(--secondary-bg);
+            width: 375px;
+            height: auto;
+            border-radius: var(--basic-radius);
+        }
+
+        .discord_Header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            padding: 8px 16px;
+            flex-direction: column;
+        }
+
+        .discord_Header h3 {
+            color: var(--text-color);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .discord_x {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Positions switch to the right */
+            gap: 8px;
+            padding: 16px 0;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            font-size: 16px;
+        }
+
     `;
+
     document.head.appendChild(style);
 
     const uiContainer = document.createElement('div');
-    uiContainer.className = 'MSP2_Container';
-    uiContainer.id = 'uiContainer';
+    uiContainer.classList.add('repeater_Container');
+    uiContainer.id = 'repeater_Container';
     uiContainer.innerHTML = `
-        <div class="MSP2_Title">
-            <h1>MEOWD0LE</h1>
+        <div class="repeater_Header">
+            <h3 class="repeater_Title">MSP2_Repeater</h3>
+            <button class="repeat_Close">×</button>
         </div>
-        <div class="MSP2_Body">
-            <div class="MSP2_Commands">
-                <div class="MSP2_ChatReflection">
-                    <button class="command-button">
-                        <span class="command-name">Enable chat reflection</span>
-                        <span class="command-shortcut">Alt+P</span>
-                    </button>
+
+        <div class="repeat_Content">
+            <div class="MSP2_Repeates">
+                <div class="repeat_Header">
+                    <h3 class="repeat_Title">Repeat</h3>
+                    <div class="repeater_x">
+                        <p>Enable Repeater</p>
+                        <label class="switch" id='repeat_switch'>
+                          <input type="checkbox">
+                          <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="MSP2_Footer">
-            <span class="control-dot red"></span>
-            <h2>Disconnected</h2>
+
+        <div class="discord_Content">
+            <div class="MSP2_Discord">
+                <div class="discord_Header">
+                    <h3 class="discord_Title">Discord</h3>
+                    <div class="discord_x">
+                        <p>Enable Discord Loggin</p>
+                        <label class="switch" id='dc_switch'>
+                          <input type="checkbox">
+                          <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
+
     document.body.appendChild(uiContainer);
 
+    const repeatSwitch = document.querySelector('#repeat_switch input');
+    const dcSwitch = document.querySelector('#dc_switch input');
+
+    repeatSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            imitateMessages = true;
+
+        } else {
+            imitateMessages = false;
+        }
+    });
+
+    dcSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            sendToDiscord = true;
+        } else {
+            sendToDiscord = false;
+        }
+    });
+
+    const startX = 250;
+    const startY = 25;
+
+    uiContainer.style.left = `${startX}px`;
+    uiContainer.style.top = `${startY}px`;
+
     let isDragging = false;
-    let currentX;
-    let currentY;
+    let currentX = startX;
+    let currentY = startY;
     let initialX;
     let initialY;
-    let xOffset = 0;
-    let yOffset = 0;
+    let xOffset = startX;
+    let yOffset = startY;
+
+    const closeButton = document.querySelector('.repeat_Close');
+
+    function closeContainer() {
+        uiContainer.remove();
+    }
+
+    closeButton.addEventListener('click', closeContainer);
+    
 
     uiContainer.addEventListener("mousedown", dragStart);
     document.addEventListener("mousemove", drag);
     document.addEventListener("mouseup", dragEnd);
+    
 
     function dragStart(e) {
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
-        if (e.target.closest('.MSP2_Title')) {
+        if (e.target.closest('.repeater_Header')) {
             isDragging = true;
         }
     }
@@ -170,9 +425,12 @@
             e.preventDefault();
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
+
             xOffset = currentX;
             yOffset = currentY;
-            setTranslate(currentX, currentY, uiContainer);
+
+            uiContainer.style.left = `${currentX}px`;
+            uiContainer.style.top = `${currentY}px`;
         }
     }
 
@@ -182,128 +440,91 @@
         isDragging = false;
     }
 
-    function setTranslate(xPos, yPos, el) {
-        el.style.transform = `translate(${xPos}px, ${yPos}px)`;
-    }
-
     window.ws = null;
     let imitateMessages = false;
+    let sendToDiscord = false;
 
     function initWebSocket() {
-        var nativeWebSocket = window.WebSocket;
-        window.WebSocket = function (...args) {
+        let nativeWebSocket = window.WebSocket;
+        window.WebSocket = function(...args) {
             const socket = new nativeWebSocket(...args);
             window.ws = socket;
-            console.log('WebSocket verbonden. Je kunt nu ws.send() gebruiken in de console.');
-            socket.addEventListener('message', handleMessage);
-            socket.addEventListener('open', handleOpen);
-            socket.addEventListener('open', keepAlive);
 
             socket.addEventListener('open', function() {
-                websocketURL = socket.url;
-                const roomIdMatch = websocketURL.match(/gs-chatroom-([\w-]+)/);
-                const roomId = roomIdMatch ? roomIdMatch[1] : "Unknown Room";
-                console.log('WebSocket Room ID:', roomId);
-                document.querySelector('.MSP2_Footer h2').textContent = `Connected to: ${roomId}`;
+                const title = uiContainer.querySelector('.repeater_Title');
+                title.classList.add('connected');
+            
+                console.log(`
+                ******************************************
+                            WEBSOCKET CONNECTED
+                ******************************************
+                `);
             });
             
+
+            socket.addEventListener('error', function() {
+                console.error('WebSocket error');
+                uiContainer.querySelector('.repeater_Title').classList.remove('connected');
+                console.log(`
+                ******************************************
+                            WEBSOCKET ERROR
+                ******************************************
+                `);
+            });
+
+            socket.addEventListener('message', handleMessage);
+
+            function handleMessage(event) {
+                try {
+                    const data = JSON.parse(event.data.substring(2));
+                    if (data[0] === "message" && data[1].messageType === "2001") {
+                        const message = data[1].messageContent.message;
+                        const profileID = data[1].messageContent.profileId;
+                        
+                        if (imitateMessages) {
+                            setTimeout(() => sendImitatedMessage(message), 1);
+                        }
+        
+                        if (sendToDiscord && discord_webhook) {
+                            fetch(discord_webhook, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    content: `${profileID}: ${message}`
+                                }),
+                            }).then(response => {
+                                if (!response.ok) {
+                                    console.error('Fout bij het verzenden van het bericht naar Discord:', response);
+                                }
+                            }) .catch(error => {
+                                console.error('Fout bij het verzenden van het bericht naar Discord:', error);
+                            });
+                        }
+        
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            function sendImitatedMessage(message) {
+                const bericht = `42["chatv2:send",{"message":"${message}"}]`;
+                if (window.ws) {
+                    ws.send(bericht);
+                } else {
+                    console.log('lol error successsss');
+                }
+            }
             
             return socket;
+
         };
-    }
-
-    function handleMessage(event) {
-        try {
-            const data = JSON.parse(event.data.substring(2));
-            if (data[0] === "message" && data[1].messageType === "2001") {
-                const message = data[1].messageContent.message;
-                const profileID = data[1].messageContent.profileId;
-                console.log('%c Ontvangen bericht: ' + message, 'color: green; font-weight: bold; font-size: 14px;');
-                
-                if (imitateMessages) {
-                    setTimeout(() => sendImitatedMessage(message), 1);
-                }
-
-                if (saveMessagesToDiscord && discordWebhookURL) {
-                    fetch(discordWebhookURL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            content: `${profileID}: ${message}`
-                        }),
-                    }).then(response => {
-                        if (!response.ok) {
-                            console.error('Fout bij het verzenden van het bericht naar Discord:', response);
-                        }
-                    }) .catch(error => {
-                        console.error('Fout bij het verzenden van het bericht naar Discord:', error);
-                    });
-                }
-
-            }
-        } catch (error) {
-            console.error('Fout bij het verwerken van het bericht:', error);
-        }
-    }
-
-    function handleOpen() {
-        const dotElement = document.querySelector('.control-dot');
-        const statusElement = document.querySelector('.MSP2_Footer h2');
-        if (dotElement) dotElement.style.backgroundColor = '#27c93f';
-        if (statusElement) statusElement.textContent = `Connected`;
-    }
-
-    function sendImitatedMessage(message) {
-        const bericht = `42["chatv2:send",{"message":"${message}"}]`;
-        console.log(`Imitatiebericht verzenden: ${bericht}`);
-        if (window.ws) {
-            ws.send(bericht);
-        } else {
-            console.log('Let op: ws is niet gedefinieerd. Het bericht is niet daadwerkelijk verzonden.');
-        }
-    }
-
-    function keepAlive () {
-        const timeout = 6 * 1000;
-
-        if (window.ws) {
-            ws.send('2');
-            setTimeout(keepAlive, timeout);
-        } else {
-            console.log('Let op: ws is niet gedefinieerd. Het bericht is niet daadwerkelijk verzonden.');
-        }
-    }
-
-    window.toggleImitateMessages = function() {
-        imitateMessages = !imitateMessages;
-        console.log(`Imitatie van berichten is nu ${imitateMessages ? 'AAN' : 'UIT'}`);
-        
-        const button = document.querySelector('.command-button');
-        if (button) {
-            button.style.borderLeftColor = imitateMessages ? '#27c93f' : '#ff5f56';
-        }
-        
-        const commandName = button.querySelector('.command-name');
-        if (commandName) {
-            commandName.textContent = imitateMessages ? 'Disable chat reflection' : 'Enable chat reflection';
-        }
     };
-
-    document.addEventListener('keydown', function(event) {
-        if (event.altKey && event.key === 'p') {
-            event.preventDefault();
-            toggleImitateMessages();
-        }
-    });
 
     initWebSocket();
 
-    console.log('WebSocket interceptor geïnstalleerd.');
-
-    const commandButton = document.querySelector('.command-button');
-    if (commandButton) {
-        commandButton.addEventListener('click', toggleImitateMessages);
-    }
 })();
+
+// fix unexpected end of JSON input at JSON.parse (<anonymous> at handleMessage)
