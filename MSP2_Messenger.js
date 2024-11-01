@@ -1,202 +1,200 @@
 (function () {
     const style = document.createElement('style');
     style.innerHTML = `
-:root {
+        :root {
+            --primary-bg: #0f172afa;
+            --secondary-bg: #1e293b;
 
-    --primary-bg: #0f172afa;
-    --secondary-bg: #1e293b;
+            --border-color: #6366f126;
+            --basic-radius: 8px;
 
-    --border-color: #6366f126;
-    --basic-radius: 8px;
+            --dissconnected: #FF5C5C;
+            --connected: #98FF98;
+            --color-loading: #FFD700;
 
-    --dissconnected: #FF5C5C;
-    --connected: #98FF98;
-    --color-loading: #FFD700;
+            --slider-green: #50C878;
 
-    --slider-green: #50C878;
+            --text-color: #f8fafc;
 
-    --text-color: #f8fafc;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
 
-    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
+        * {
+            margin: 0;
+            padding: 0;
 
-* {
-    margin: 0;
-    padding: 0;
+            box-sizing: border-box;
 
-    box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) var(--secondary-bg);
+        }
 
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-color) var(--secondary-bg);
-}
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
 
-::-webkit-scrollbar {
-    width: 10px;
-}
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+            border-radius: var(--basic-radius);
+        }
 
-::-webkit-scrollbar-track {
-    background: var(--secondary-bg);
-    border-radius: var(--basic-radius);
-}
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: var(--basic-radius);
+        }
 
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: var(--basic-radius);
-}
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--slider-green);
+        }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--slider-green);
-}
+        .chat_Header, .chat_Title, .chat_Close, .chat_Send { user-select: none; }
 
-.chat_Header, .chat_Title, .chat_Close, .chat_Send { user-select: none; }
+        .chat_Container {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            position: fixed;
+            top: 25px;
+            left: 50px;
+            width: 500px;
+            max-width: 400px;
+            background: #0f172afa;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px #0000004d, 0 0 0 1px var(--border-color);
+            z-index: 9999;
+            backdrop-filter: blur(12px);
+            animation: slideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            height: auto;
+            padding-bottom: 15px;
+        }
 
-.chat_Container {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    position: fixed;
-    top: 25px;
-    left: 50px;
-    width: 500px;
-    max-width: 400px;
-    background: #0f172afa;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px #0000004d, 0 0 0 1px var(--border-color);
-    z-index: 9999;
-    backdrop-filter: blur(12px);
-    animation: slideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    transition: transform 0.5s ease, opacity 0.5s ease;
+        .chat_Header {
+            background: #1e293b;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+            cursor: move;
+        }
 
-    height: auto;
-    padding-bottom: 15px;
-}
+        .chat_Title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--dissconnected);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--dissconnected);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
 
-.chat_Header {
-    background: #1e293b;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 16px 16px 0 0;
-    cursor: move;
-}
+        .chat_Title {
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-.chat_Title::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: var(--dissconnected);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--dissconnected);
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+        .chat_Title.connected::before {
+            background: var(--connected);
+            box-shadow: 0 0 12px 3px var(--connected);
+        }
 
-.chat_Title {
-    color: var(--text-color);
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
+        .chat_Close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 18px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-.chat_Title.connected::before {
-    background: var(--connected);
-    box-shadow: 0 0 12px 3px var(--connected);
-}
+        .chat_Close:hover {
+            background: #334155;
+            color: var(--text-color);
+        }
 
-.chat_Close {
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    font-size: 18px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        .chat_Content {
+            font-family: var(--font-family);
+            width: 100%;
+            height: calc(100% - 48px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            align-content: center;
+            gap: 8px;
+            padding: 10px;
+        }
 
-.chat_Close:hover {
-    background: #334155;
-    color: var(--text-color);
-}
+        .chat_Input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 8px;
+            user-select: text;
+        }
 
-.chat_Content {
-    font-family: var(--font-family);
-    width: 100%;
-    height: calc(100% - 48px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: center;
-    gap: 8px;
-    padding: 10px;
-}
+        .chat_Send {
+            background: #6366f1;
+            color: var(--text-color);
+            border: none;
+            border-radius: 16px;
+            padding: 8px 22px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-.chat_Input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
-    color: var(--text-color);
-    font-size: 14px;
-    resize: none;
-    outline: none;
-    padding: 16px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-bottom: 8px;
-    user-select: text;
-}
+        .chat_Send:hover {
+            background: #4f46e5;
+            color: var(--text-color);
+            transform: scale(1.02);
+        }
 
-.chat_Send {
-    background: #6366f1;
-    color: var(--text-color);
-    border: none;
-    border-radius: 16px;
-    padding: 8px 22px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
 
-.chat_Send:hover {
-    background: #4f46e5;
-    color: var(--text-color);
-    transform: scale(1.02);
-}
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
+        @keyframes fadeOut {
+            from { opacity: 1;}
+            to { opacity: 0;}
+        }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+        @keyframes enterScreen {
+            from { opacity: 0;  top: -100px}
+            to { opacity: 1; top: 25px;}
+        }
 
-@keyframes fadeOut {
-    from { opacity: 1;}
-    to { opacity: 0;}
-}
-
-@keyframes enterScreen {
-    from { opacity: 0;  top: -100px}
-    to { opacity: 1; top: 25px;}
-}
-
-@keyframes exitScreen {
-    from { opacity: 1; top: 25px;}
-    to { opacity: 0; top: -100px;}
-}
+        @keyframes exitScreen {
+            from { opacity: 1; top: 25px;}
+            to { opacity: 0; top: -100px;}
+        }
 
     `;
 
@@ -206,7 +204,7 @@
     container.className = 'chat_Container';
     container.id = 'chat_Container';
     container.innerHTML = `
-            <div class="chat_Header">
+        <div class="chat_Header">
             <h3 class="chat_Title">Chat</h3>
             <button class="chat_Close">×</button>
         </div>
@@ -237,13 +235,11 @@
     let xOffset = startX;
     let yOffset = startY;
 
-
     function closeContainer() {
         uiContainer.remove();
     }
 
     closeButton.addEventListener('click', closeContainer);
-
 
     header.addEventListener("mousedown", dragStart);
     document.addEventListener("mousemove", drag);
@@ -369,6 +365,7 @@
             socket.addEventListener('error', function () {
                 console.error('WebSocket error');
                 uiContainer.querySelector('.chat_Title').classList.remove('connected');
+                
                 console.log(`
                 ******************************************
                             WEBSOCKET ERROR
