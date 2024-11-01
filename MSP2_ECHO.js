@@ -161,10 +161,8 @@
         }
 
         .repeater_Title.connected::before {
-            content: '';
-            display: block;
-            background-color: green;
-            box-shadow: 0 0 8px var(--connected);
+            background: var(--connected);
+            box-shadow: 0 0 12px 3px var(--connected);
         }
         
 

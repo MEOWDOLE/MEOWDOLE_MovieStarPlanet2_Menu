@@ -210,11 +210,11 @@
                     <h3 class="emote_Title">Emotes</h3>
                 </div>
                 <div class="emote_Buttons">
-                    <button class="emote_LvlUp">Level Up</button>
-                    <button class="emote_BasicGift">Basic Gift</button>
-                    <button class="emote_Heart">Halloween Heart</button>
-                    <button class="emote_VIPGift">VIP Gift</button>
-                    <button class="emote_Skull">Event Skull</button>
+                    <button class="emote_LvlUp" data-message='42["avt:lvlup",{"newLevel":3}]'>Level Up</button>
+                    <button class="emote_BasicGift" data-message='42["7006",{"emote":"gift_pickup_regular_withcoins","looping":false}]'>Basic Gift</button>
+                    <button class="emote_Heart" data-message='42["7006",{"emote":"gift_pickup_heart","looping":false}]'>Halloween Heart</button>
+                    <button class="emote_VIPGift" data-message='42["7006",{"emote":"gift_pickup_vip_withmanycoins","looping":false}]'>VIP Gift</button>
+                    <button class="emote_Skull" data-message='42["7006",{"emote":"gift_pickup_halloween_skull","looping":false}]'>Event Skull</button>
                 </div>
             </div>
             <div class="MSP2_Moods">
@@ -236,8 +236,6 @@
         
         `;
 
-
-    // <button class="mood_Bended">no walking</button>
     document.body.appendChild(container);
 
     const uiContainer = document.getElementById('animation_Container');
@@ -356,21 +354,18 @@
                 }
             };
 
-            document.querySelector('.emote_LvlUp').addEventListener('click', () => sendSocketMessage('42["avt:lvlup",{"newLevel":3}]'));
-            document.querySelector('.emote_BasicGift').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_regular_withcoins","looping":false}]'));
-            document.querySelector('.emote_Heart').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_heart","looping":false}]'));
-            document.querySelector('.emote_VIPGift').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_vip_withmanycoins","looping":false}]'));
-            document.querySelector('.emote_Skull').addEventListener('click', () => sendSocketMessage('42["7006",{"emote":"gift_pickup_halloween_skull","looping":false}]'));
-            
-            document.querySelector('.mood_Bended').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"2023_bended_lz"}]'));
-            document.querySelector('.mood_Spider').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"2023_spidercrawl_lsz"}]'));
-            document.querySelector('.mood_Frosty').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"xmas_2022_frosty_dg"}]'));
-            document.querySelector('.mood_Freezing').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"xmas_2022_freezing_lsz"}]'));
-            document.querySelector('.mood_Turky').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"2022_turkeywalk_lsz"}]'));
-            document.querySelector('.mood_Teenwalk').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"bad_2022_teenwalk_dg"}]'));
-            document.querySelector('.mood_Swim').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"swim_new"}]'));
-            document.querySelector('.mood_Skating').addEventListener('click', () => sendSocketMessage('42["7005",{"mood":"noshoes_skating"}]'));
+            document.querySelectorAll('.emote_Buttons button').forEach(button => 
+                button.addEventListener('click', () => 
+                    sendSocketMessage(button.getAttribute('data-message'))
+                )
+            );
 
+            document.querySelectorAll('.mood_Buttons button').forEach(button => 
+                button.addEventListener('click', () => 
+                    sendSocketMessage(`42["7005",{"mood":"${button.textContent}"}]`)
+                )
+            );
+            
             return socket;
         };
     };
